@@ -1,0 +1,24 @@
+version: '2'
+services:
+  app:
+    build: .
+    restart: always
+    environment:
+      DATABASE_HOST: "imagesDb"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    links:
+      - mariadb:imagesDb
+    command: sh -c './wait-for mariadb:3306 -- npm start'
+  mariadb:
+    image: mariadb:11.0.2
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root-password
+      - MYSQL_DATABASE=images
+      - MYSQL_USER=imageAdmin
+      - MYSQL_PASSWORD=imageAdminPassword
+    command: ["--log_bin_trust_function_creators=1"]
